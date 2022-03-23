@@ -24,5 +24,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 sr.write(arr)
 
                 f.write(data.decode("ISO-8859-1") + '@' + str(datetime.datetime.now()) + '\n')
-                time.sleep(st)
+                time.sleep(st/2)
+                
+                s.sendall(b'p\r')
+                data = s.recv(1024)
+                
+                f.write(data.decode("ISO-8859-1") + '@' + str(datetime.datetime.now()) + '\n')
+                time.sleep(st/2)
                 #print(f"Received", data)
