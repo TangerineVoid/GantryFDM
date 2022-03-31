@@ -35,11 +35,7 @@ try:
             m.poll()  # get current values
             vout = []
             enablePrint()
-            print
-            data
             for x in data.split(","):
-                print
-                x
                 if x == "ml":
                     val = getattr(m, 'motion_line')
                     val = ''.join(str(val))
@@ -57,8 +53,6 @@ try:
                     val = ''.join(str(val))
                     vout.append(val)
             enablePrint()
-            print
-            vout
             conn.sendall(bytes(''.join(str(vout))))
 finally:
     s.close()
