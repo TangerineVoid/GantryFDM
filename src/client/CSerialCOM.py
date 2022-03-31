@@ -17,18 +17,20 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S")) + '.txt', 'a') as f:
             print('file opened')
             while 1:
+                s.sendall(b'cl\r')
+                dataline = s.recv(1024)
+                s.sendall(b'cmm\r')
+                datacmm = s.recv(1024)
                 s.sendall(b'p\r')
-                data = s.recv(1024)
+                datapos = s.recv(1024)
+                s.sendall(b'v\r')
+                datavel = s.recv(1024)
 
                 arr = bytes("!Snapshot\r\n", 'utf-8')
                 sr.write(arr)
 
-                f.write(data.decode("ISO-8859-1") + '@' + str(datetime.datetime.now()) + '\n')
-                time.sleep(st/2)
-                
-                s.sendall(b'p\r')
-                data = s.recv(1024)
-                
-                f.write(data.decode("ISO-8859-1") + '@' + str(datetime.datetime.now()) + '\n')
-                time.sleep(st/2)
+                f.write(dataline.decode("ISO-8859-1") + '@' + datacmm.decode("ISO-8859-1") + '@' +
+                        datapos.decode("ISO-8859-1") + '@' + datavel.decode("ISO-8859-1") + '@' +
+                        str(datetime.datetime.now()) + '\n')
+                time.sleep(st)
                 #print(f"Received", data)
