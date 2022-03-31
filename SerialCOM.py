@@ -25,4 +25,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
                 f.write(data.decode("ISO-8859-1") + '@' + str(datetime.datetime.now()) + '\n')
                 time.sleep(st)
-                #print(f"Received", data)
+                #print(f"Received", data)p
