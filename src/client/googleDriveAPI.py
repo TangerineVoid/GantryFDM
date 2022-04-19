@@ -1,8 +1,28 @@
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
-
-# For using listdir()
+from threading import Thread
+from time import sleep, perf_counter
 import os
+
+def uploadFile(x):
+    # for upload_file in upload_file_list:
+    # f = drive.CreateFile({'title': x})
+    global numf
+    f = drive.CreateFile({'parents': [
+        {'kind': 'drive#fileLink', 'driveId': '0ANnhUPokrNvoUk9PVA', 'id': '1grxezXKmSaLWzR-5JhY-qDaNKP71Ocb_'}]})
+    f['title'] = x
+    f.SetContentFile(os.path.join(path, x))
+    # f.SetContentFile(os.path.join(path, upload_file))
+    f.Upload(param={'supportsTeamDrives': True})
+    numf += 1
+
+    # Due to a known bug in pydrive if we
+    # don't empty the variable used to
+    # upload the files to Google Drive the
+    # file stays open in memory and causes a
+    # memory leak, therefore preventing its
+    # deletion
+    f = None
 
 # Below code does the authentication
 # part of the code
@@ -19,16 +39,32 @@ path = r"D:\Users\sergio.salinas\Documents\Imager Data\subir"
 
 # iterating thought all the files/folder
 # of the desired directory
-for x in os.listdir(path):
-    f = drive.CreateFile({'parents': [{'kind': 'drive#fileLink', 'driveId': '0ANnhUPokrNvoUk9PVA', 'id': '1-wio0CBwiYZRpOXcu1lhHubE5bm-vc_1'}]})
-    f['title'] = x
-    f.SetContentFile(os.path.join(path, x))
-    f.Upload(param={'supportsTeamDrives': True})
+#upload_file_list = ['test.txt']
+flist = os.listdir(path)
+start_time = perf_counter()
+# create and start 10 threads
+threads = []
+count = 0
+ltend = 0
+numf = 0
+nthds = 7
+for e, x in enumerate(flist):
+    for n in range(0, nthds):
+        if n+(count*nthds) <= len(flist) - 1:
+            t = Thread(target=uploadFile, args=(flist[n+(count*nthds)],))
+            threads.append(t)
+            t.start()
+        else:
+            litend = 1
+            break
+    count += 1
+    for t in threads:
+        t.join()
+    if ltend == 1:
+        ltend = 0
+        count = 0
+        break
+end_time = perf_counter()
 
-    # Due to a known bug in pydrive if we
-    # don't empty the variable used to
-    # upload the files to Google Drive the
-    # file stays open in memory and causes a
-    # memory leak, therefore preventing its
-    # deletion
-    f = None
+print(f'It took {end_time- start_time: 0.2f} second(s) to complete.')
+print("Se subieron: ", numf)
