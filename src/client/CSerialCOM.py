@@ -2,6 +2,7 @@
 import socket
 import time, datetime
 import serial
+from ast import literal_eval
 import os
 
 st = 0.5
@@ -13,24 +14,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
     with serial.Serial(port="COM5", baudrate=115200, bytesize=8, stopbits=serial.STOPBITS_ONE) as sr:
         print('serial connected')
-        with open('D:/Users/sergio.salinas/Documents/Imager Data/' + 'positions_' + str(
-                datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S")) + '.txt', 'a') as f:
+        fname = 'D:/Users/sergio.salinas/Documents/Imager Data/' + 'data_' + str(
+                datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S")) + '.txt'
+        with open(fname, 'a') as f:
             print('file opened')
             while 1:
-                s.sendall(b'cl\r')
-                dataline = s.recv(1024)
-                s.sendall(b'cmm\r')
-                datacmm = s.recv(1024)
-                s.sendall(b'p\r')
-                datapos = s.recv(1024)
-                s.sendall(b'v\r')
-                datavel = s.recv(1024)
+                s.sendall(b'ml,cmm,p,v,\r')
+                data = s.recv(1024)
+                dataarr = literal_eval(data.decode("ISO-8859-1"))
+                if dataarr[0] != '0':
+                    arr = bytes("!Snapshot\r\n", 'utf-8')
+                    sr.write(arr)
 
-                arr = bytes("!Snapshot\r\n", 'utf-8')
-                sr.write(arr)
-
-                f.write(dataline.decode("ISO-8859-1") + '@' + datacmm.decode("ISO-8859-1") + '@' +
-                        datapos.decode("ISO-8859-1") + '@' + datavel.decode("ISO-8859-1") + '@' +
-                        str(datetime.datetime.now()) + '\n')
-                time.sleep(st)
-                #print(f"Received", data)
+                    f.write(data.decode("ISO-8859-1") + '@' +
+                            str(datetime.datetime.now()) + '\n')
+                    time.sleep(st)
