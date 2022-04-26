@@ -9,11 +9,16 @@ def uploadFile(x):
     # f = drive.CreateFile({'title': x})
     global numf
     f = drive.CreateFile({'parents': [
-        {'kind': 'drive#fileLink', 'driveId': '0ANnhUPokrNvoUk9PVA', 'id': '1grxezXKmSaLWzR-5JhY-qDaNKP71Ocb_'}]})
+        {'kind': 'drive#fileLink', 'driveId': '0ANnhUPokrNvoUk9PVA', 'id': '1zkXkA3kHYUCW-mb1DvWiWLnZppcu1Kq7'}]})
     f['title'] = x
     f.SetContentFile(os.path.join(path, x))
     # f.SetContentFile(os.path.join(path, upload_file))
-    f.Upload(param={'supportsTeamDrives': True})
+    while True:
+        try:
+            f.Upload(param={'supportsTeamDrives': True})
+        except:
+            continue
+        break
     numf += 1
 
     # Due to a known bug in pydrive if we
@@ -53,13 +58,24 @@ for e, x in enumerate(flist):
         if n+(count*nthds) <= len(flist) - 1:
             t = Thread(target=uploadFile, args=(flist[n+(count*nthds)],))
             threads.append(t)
-            t.start()
+            while True:
+                try:
+                    t.start()
+                except:
+                    continue
+                break
         else:
             litend = 1
             break
+
     count += 1
     for t in threads:
-        t.join()
+        while True:
+            try:
+                t.join()
+            except:
+                continue
+            break
     if ltend == 1:
         ltend = 0
         count = 0
