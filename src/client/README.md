@@ -38,4 +38,4 @@ Some links:
 - https://stackoverflow.com/questions/8130823/set-matplotlib-3d-plot-aspect-ratio
 - https://pythonguides.com/matplotlib-3d-scatter/
 - https://plotly.com/python/3d-scatter-plots/
-- https://matplotlib.org/stable/gallery/mplot3d/scatter3d.html
+- https://matplotlib.org/stable/gallery/mplot3d/scatter3d.html 
