@@ -1,4 +1,10 @@
-# import numpy as np
+import sys
+import logging
+from watchdog.observers import Observer
+#from watchdog.events import LoggingEventHandler
+from watchdog.events import FileSystemEventHandler
+import numpy as np
+
 # path = r"D:\Users\sergio.salinas\Documents\Imager Data\subir"
 # file = path + "\Record_2022-04-27_15-18-33.csv"
 # with open(file) as file_name:
@@ -11,6 +17,30 @@
 #     sarr = ' '.join(str(c) for r in array for c in r)
 #     f.write(sarr)
 #     #f.write(sarr + '\r\n')
+
+
+
+def on_created(event):
+    print(str(event.src_path).split('/')[-1])
+
+
+if __name__ == "__main__":
+    #logging.basicConfig(level=logging.INFO,
+    #                    format='%(asctime)s - %(message)s',
+    #                    datefmt='%Y-%m-%d %H:%M:%S')
+    #path = sys.argv[1] if len(sys.argv) > 1 else '.'
+    path = 'D:/Users/sergio.salinas/Documents/Imager Data/'
+    event_handler = FileSystemEventHandler()
+    event_handler.on_created = on_created
+    observer = Observer()
+    observer.schedule(event_handler, path, recursive=False)
+    observer.start()
+    try:
+        while observer.isAlive():
+            observer.join(1)
+    finally:
+        observer.stop()
+        observer.join()
 
 # from watchdog.observers import Observer
 # from watchdog.events import FileSystemEventHandler
@@ -36,29 +66,3 @@
 #     except KeyboardInterrupt:
 #         observer.stop()
 
-import sys
-import logging
-from watchdog.observers import Observer
-#from watchdog.events import LoggingEventHandler
-from watchdog.events import FileSystemEventHandler
-
-def on_created(event):
-    print('created')
-
-if __name__ == "__main__":
-    #logging.basicConfig(level=logging.INFO,
-    #                    format='%(asctime)s - %(message)s',
-    #                    datefmt='%Y-%m-%d %H:%M:%S')
-    #path = sys.argv[1] if len(sys.argv) > 1 else '.'
-    path = 'D:/Users/sergio.salinas/Documents/Imager Data/'
-    event_handler = FileSystemEventHandler()
-    event_handler.on_created = on_created
-    observer = Observer()
-    observer.schedule(event_handler, path, recursive=False)
-    observer.start()
-    try:
-        while observer.isAlive():
-            observer.join(1)
-    finally:
-        observer.stop()
-        observer.join()
