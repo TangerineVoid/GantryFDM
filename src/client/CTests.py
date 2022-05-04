@@ -4,24 +4,30 @@ from watchdog.observers import Observer
 #from watchdog.events import LoggingEventHandler
 from watchdog.events import FileSystemEventHandler
 import numpy as np
-
-# path = r"D:\Users\sergio.salinas\Documents\Imager Data\subir"
-# file = path + "\Record_2022-04-27_15-18-33.csv"
-# with open(file) as file_name:
-#     array = np.genfromtxt(file_name, delimiter=',')[:,:-1]
-#
-# print(array)
-# fname = 'D:/Users/sergio.salinas/Documents/Imager Data/' + 'data_' + '.txt'
-# with open(fname, 'a') as f:
-#     print('file opened')
-#     sarr = ' '.join(str(c) for r in array for c in r)
-#     f.write(sarr)
-#     #f.write(sarr + '\r\n')
-
-
+from threading import Thread
+from queue import Queue
+import time as t
 
 def on_created(event):
-    print(str(event.src_path).split('/')[-1])
+    file = path + '\\' + str(event.src_path).split('\\')[-1]
+    print("New file")
+    convFile(file)
+    #fnames.append(file)
+    #t = Thread(target=convFile, args=file)
+    #t.start()
+    #t.join()
+
+
+def convFile(file):
+    print(file)
+    with open(file) as file_name:
+        array = np.genfromtxt(file_name, delimiter=',')[:, :-1]
+    fname = 'D:/Users/sergio.salinas/Documents/Imager Data/data/' + 'data_' + '.txt'
+    with open(fname, 'a') as f:
+        #print('file opened')
+        sarr = ' '.join(str(c) for r in array for c in r)
+        #f.write(sarr)
+        f.write(sarr + '\n')
 
 
 if __name__ == "__main__":
@@ -29,7 +35,9 @@ if __name__ == "__main__":
     #                    format='%(asctime)s - %(message)s',
     #                    datefmt='%Y-%m-%d %H:%M:%S')
     #path = sys.argv[1] if len(sys.argv) > 1 else '.'
-    path = 'D:/Users/sergio.salinas/Documents/Imager Data/'
+    #path = 'D:/Users/sergio.salinas/Documents/Imager Data/'
+    path = r"D:\Users\sergio.salinas\Documents\Imager Data"
+    fnames = []
     event_handler = FileSystemEventHandler()
     event_handler.on_created = on_created
     observer = Observer()
