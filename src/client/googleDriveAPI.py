@@ -3,13 +3,15 @@ from pydrive.auth import GoogleAuth
 from threading import Thread
 from time import sleep, perf_counter
 import os
+from tqdm import tqdm
+from plyer import notification
 
 def uploadFile(x):
     # for upload_file in upload_file_list:
     # f = drive.CreateFile({'title': x})
     global numf
     f = drive.CreateFile({'parents': [
-        {'kind': 'drive#fileLink', 'driveId': '0ANnhUPokrNvoUk9PVA', 'id': '1zkXkA3kHYUCW-mb1DvWiWLnZppcu1Kq7'}]})
+        {'kind': 'drive#fileLink', 'driveId': '0ANnhUPokrNvoUk9PVA', 'id': '1o1XSPCj_OyaYcMCscCAUfpiCHhyScVyD'}]})
     f['title'] = x
     f.SetContentFile(os.path.join(path, x))
     # f.SetContentFile(os.path.join(path, upload_file))
@@ -40,7 +42,7 @@ drive = GoogleDrive(gauth)
 
 # replace the value of this variable
 # with the absolute path of the directory
-path = r"D:\Users\sergio.salinas\Documents\Imager Data\subir"
+path = r"D:\Users\sergio.salinas\Documents\Imager Data\subir21"
 
 # iterating thought all the files/folder
 # of the desired directory
@@ -52,8 +54,8 @@ threads = []
 count = 0
 ltend = 0
 numf = 0
-nthds = 7
-for e, x in enumerate(flist):
+nthds = 2
+for e, x in tqdm(enumerate(flist), total=len(flist)/nthds):
     for n in range(0, nthds):
         if n+(count*nthds) <= len(flist) - 1:
             t = Thread(target=uploadFile, args=(flist[n+(count*nthds)],))
@@ -81,6 +83,11 @@ for e, x in enumerate(flist):
         count = 0
         break
 end_time = perf_counter()
+
+notification.notify(
+        title = 'Upload Complete',
+        message = 'Se terminaron de subir los archivos',
+        timeout = 120)
 
 print(f'It took {end_time- start_time: 0.2f} second(s) to complete.')
 print("Se subieron: ", numf)
