@@ -3,6 +3,7 @@ import socket
 import time, datetime
 import serial
 from ast import literal_eval
+import numpy as np
 import os
 
 st = 0.5
