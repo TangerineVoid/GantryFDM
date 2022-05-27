@@ -40,7 +40,7 @@ class ReadData:
 
     def machinekit(self, s):
         try:
-            s.sendall(b'ml,cmm,p,v,\r')
+            s.sendall(b'ml,cmm,p,v,f,\r')
             data = s.recv(1024)
             data_arr = literal_eval(data.decode("ISO-8859-1"))
             return data_arr

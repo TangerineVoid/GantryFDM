@@ -1,16 +1,16 @@
-import sys
-import logging
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import numpy as np
 from threading import Thread
-from queue import Queue
-import time as t
-import datetime
 from sqlCOM import SqlCOM as sql
 from readData import ReadData as rdata
 from saveData import SaveData as sdata
+#import sys
+#import logging
+#from queue import Queue
+#import time as t
+#import numpy as np
+#import datetime
 
 def on_created(event):
     file = path + '\\' + str(event.src_path).split('\\')[-1]

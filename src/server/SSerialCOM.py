@@ -22,10 +22,9 @@ try:
     s.bind((HOST, PORT))
     s.listen(5)
     conn, addr = s.accept()
+    print "Connected by ", addr
 
     while True:
-        print
-        "Connected by ", addr
         data = conn.recv(1024)
         if not data:
             break
@@ -50,6 +49,10 @@ try:
                     vout.append(val)
                 elif x == "v":
                     val = getattr(m, 'current_vel')
+                    val = ''.join(str(val))
+                    vout.append(val)
+                elif x == "f":
+                    val = getattr(m, 'file')
                     val = ''.join(str(val))
                     vout.append(val)
             enablePrint()
