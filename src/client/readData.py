@@ -2,6 +2,8 @@ import serial
 import socket
 import datetime
 from ast import literal_eval
+import zlib
+import base64
 
 class ReadData:
     # instance attributes
@@ -33,10 +35,13 @@ class ReadData:
             print('serial connected')
             return s
         elif parent == "XDK":
-            s = serial.Serial(port=port or self.port, baudrate=baudrate or self.baudrate,
-                          bytesize=bytesize or self.bytesize, stopbits=stopbits or self.stopbits)
-            print('serial connected')
-            return s
+            try:
+                s = serial.Serial(port=port or self.port, baudrate=baudrate or self.baudrate,
+                              bytesize=bytesize or self.bytesize, stopbits=stopbits or self.stopbits)
+                print('serial connected')
+                return s
+            except Exception as e:
+                print(f"Error initializing machinekit. The error '{e}' occurred")
 
     def machinekit(self, s):
         try:
@@ -158,3 +163,11 @@ class ReadData:
                 start = 0
                 break
         return datarr
+
+    def decompressData(self, data):
+        #print(len(data))
+        data = (zlib.decompress(base64.b64decode(data))).decode("ISO-8859-1")
+        #data = base64.b64encode(data)
+        #data = data.decode("ISO-8859-1")
+        #print(len(data))
+        return data

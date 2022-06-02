@@ -1,6 +1,8 @@
 import datetime
 import time as t
 import numpy as np
+import zlib
+import base64
 
 class SaveData:
     # instance attributes
@@ -52,7 +54,7 @@ class SaveData:
                     query = """
                        INSERT INTO tbtest (strtempsnap, machinekitid, XDKid, dtDate)
                        VALUES ("{}", {}, {}, '{}');
-                       """.format(self.convFile(self.file), machinekitid[0], XDKid[0], str(datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S.%f")[:-2]))
+                       """.format(self.compressData(self.convFile(self.file)), machinekitid[0], XDKid[0], str(datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S.%f")[:-2]))
                     #print(query)
                     sqlConnection.add_value(str(query))
                     # print(query)
@@ -72,6 +74,7 @@ class SaveData:
                    """.format(val[0], val[1], positions[0], positions[1], positions[2], positions[3], val[3], val[4],
                               str(datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S.%f")[
                                   :-2]))
+                    print(query)
                     sqlConnection.add_value(str(query))
                 except Exception as e:
                     print(f"Error saving machinekit data. The error '{e}' occurred")
@@ -83,8 +86,16 @@ class SaveData:
 
     def convFile(self, file):
         t.sleep(0.2)
-        print(file)
+        #print(file)
         with open(file) as file_name:
             array = np.genfromtxt(file_name, delimiter=',')[:, :-1]
             sarr = ' '.join(str(c) for r in array for c in r)
             return sarr
+
+    def compressData(self, data):
+        #print(len(data))
+        data = base64.b64encode(zlib.compress(bytes(data, "ISO-8859-1")))
+        #data = base64.b64encode(data)
+        #data = data.decode("ISO-8859-1")
+        #print(len(data))
+        return data

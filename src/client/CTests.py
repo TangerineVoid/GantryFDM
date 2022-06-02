@@ -16,7 +16,7 @@ def on_created(event):
     file = path + '\\' + str(event.src_path).split('\\')[-1]
     print("New file")
     saveData.file = file
-    saveData.save_sql("thermal_camera", "sql", sqlConnection)
+    saveData.save_sql("thermal_camera", "sql", sqlConnection1)
 
 def acquire_thermalData():
     while 1:
@@ -27,13 +27,16 @@ def acquire_thermalData():
 
 def acquire_XDK():
     while 1:
-        saveData.save_sql("XDK", "sql", sqlConnection, readData.XDK(con_XDK))
+        saveData.save_sql("XDK", "sql", sqlConnection2, readData.XDK(con_XDK))
         time.sleep(st_xdk)
 
 
 def acquire_machinekit():
     while 1:
-        saveData.save_sql("machinekit", "sql", sqlConnection, readData.machinekit(con_machinekit))
+        data_machinekit = readData.machinekit(con_machinekit)
+        #print(data_machinekit[0])
+        if float(data_machinekit[0]) != 0.0:
+            saveData.save_sql("machinekit", "sql", sqlConnection3, readData.machinekit(con_machinekit))
         time.sleep(st_mkt)
 
 if __name__ == "__main__":
@@ -44,8 +47,12 @@ if __name__ == "__main__":
     st_mkt = 3  # Sampling time for thermal csv acquisition
 
     # Initialize communication objects
-    sqlConnection = sql("localhost", "root", "admin", "manuf_cell")
-    sqlConnection.create_connection()
+    sqlConnection1 = sql("localhost", "root", "admin", "manuf_cell")
+    sqlConnection1.create_connection()
+    sqlConnection2 = sql("localhost", "root", "admin", "manuf_cell")
+    sqlConnection2.create_connection()
+    sqlConnection3 = sql("localhost", "root", "admin", "manuf_cell")
+    sqlConnection3.create_connection()
     readData = rdata()
     saveData = sdata()
     con_machinekit = readData.initialize_connection("machinekit")
