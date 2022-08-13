@@ -40,15 +40,24 @@ def acquire_machinekit():
     fname = 'D:/Users/sergio.salinas/Documents/' + 'data_'
     #print(data_machinekit[0])
     time.sleep(1)
+
     # To save a .txt file
-    [data,dataxdk] = [readData.machinekit(con_machinekit), [readData.XDK(con_XDK)[13]]]
-    saveData.save_txtFile(data, fname, data2 = dataxdk)
+    #[data,dataxdk] = [readData.machinekit(con_machinekit), [readData.XDK(con_XDK)[13]]]
+    #saveData.save_txtFile(data, fname, data2 = dataxdk)
 
     # To Process thermal image
-    #data = readData.machinekit(con_machinekit)
-    #datan = saveData.process_server(data, fname)
-    #datar = saveData.run_model(datan)
-    #print("status es: ", datar)
+    ts = time.time_ns()
+    data = readData.machinekit(con_machinekit)
+    print("read {}".format(time.time_ns() - ts))
+    ts = time.time_ns()
+    datan = saveData.process_server(data, fname)
+    print("process {}".format(time.time_ns() - ts))
+    ts = time.time_ns()
+    datar = saveData.run_model(datan)
+    print("run {}".format(time.time_ns() - ts))
+    ts = time.time_ns()
+    print("status es: ", datar)
+    print("print {}".format(time.time_ns() - ts))
 
     #path = ''
     #pd.DataFrame( data ).to_csv( path + '/cdata.csv', index = False, header = False )
@@ -71,15 +80,19 @@ if __name__ == "__main__":
     #sqlConnection3.create_connection()
     readData = rdata()
     saveData = sdata()
+    ts = time.time_ns()
     con_machinekit = readData.initialize_connection("machinekit")
     print("init machinekit")
     con_thermalcamera = readData.initialize_connection("TIM40", port="COM5")
     print("init thermal camera")
     con_XDK = readData.initialize_connection("XDK", port="COM7")
     print("init XDK")
+    print("init {}".format(time.time_ns() - ts))
     #For the CNN
+    ts = time.time_ns()
     saveData.classifier = saveData.discriminator_model()
     saveData.classifier.load_weights(r"D:\Users\sergio.salinas\PycharmProjects\SerialCOM\temp\GantryFDM\src\client\weights\cp-0034.ckpt")
+    print("cnn {}".format(time.time_ns() - ts))
 
     # Initialize handlers and observers
     event_handler = FileSystemEventHandler()
