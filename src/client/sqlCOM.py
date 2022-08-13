@@ -38,7 +38,7 @@ class SqlCOM:
         try:
             cursor.execute(query)
             self.connection.commit()
-            print("Value was added successfully")
+            #print("Value was added successfully")
         except Error as e:
             print(f"The error '{e}' occurred")
 
@@ -47,7 +47,7 @@ class SqlCOM:
         try:
             cursor.execute(query)
             val = cursor.fetchall()
-            print("Value was read successfully")
+            #print("Value was read successfully")
             return val
         except Error as e:
             print(f"The error '{e}' occurred")

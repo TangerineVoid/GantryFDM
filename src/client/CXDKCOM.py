@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import time, datetime
+import time,z
 import serial
 import os
 import json
@@ -10,7 +10,7 @@ with serial.Serial(port="COM7", baudrate=115200, bytesize=8, stopbits=serial.STO
     print('serial connected')
     #fname = 'D:/Users/sergio.salinas/Documents/Imager Data/' + 'data_' + str(
     #        datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S")) + '.txt'
-    fname = r"D:\Users\sergio.salinas\PycharmProjects\test\test.txt"
+    fname = r"D:\Users\sergio.salinas\PycharmProjects\test\XDK.txt"
     with open(fname, 'a') as f:
         print('file opened')
         start = 0
